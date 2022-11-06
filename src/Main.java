@@ -29,8 +29,12 @@ import FlyWeight.Shared;
 import Iterator.LinkedList;
 import Iterator.LinkedListIterator;
 import Iterator.Node;
+import Mediator.*;
+import Memento.Notepad;
+import Memento.NotepadManager;
 import ObjectPool.ObjectPool;
 import ObjectPool.Connection;
+import Observer.Chief;
 import Proxy.SimpleSite;
 import Proxy.SiteProxy;
 
@@ -40,7 +44,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        Main.Iterator();
+        Main.Observer();
     }
 
     public static void Singleton() {
@@ -230,5 +234,52 @@ public class Main {
         linkedList.add(new Node(11));
         LinkedListIterator iterator = new LinkedListIterator(linkedList);
         iterator.iterate();
+    }
+
+    public static void Mediator() {
+        RestaurantMediator restaurant = new RestaurantMediator();
+        Waiter waiter = new Waiter("Kolya", restaurant);
+        Barman barman = new Barman("Andrey", restaurant);
+        Order foodFirstOrder = new Order(OrderType.FOOD);
+        Order foodSecondOrder = new Order(OrderType.FOOD);
+        Order drinkFirstOrder = new Order(OrderType.DRINK);
+        Order drinkSecondOrder = new Order(OrderType.DRINK);
+        restaurant.execute(foodFirstOrder, Mediator.Action.GET_ORDER);
+        restaurant.execute(foodSecondOrder, Mediator.Action.GET_ORDER);
+        restaurant.execute(drinkFirstOrder, Mediator.Action.GET_ORDER);
+        restaurant.execute(drinkSecondOrder, Mediator.Action.GET_ORDER);
+        restaurant.execute(foodFirstOrder, Mediator.Action.FINISH_ORDER);
+        restaurant.execute(foodSecondOrder, Mediator.Action.FINISH_ORDER);
+        restaurant.execute(drinkFirstOrder, Mediator.Action.FINISH_ORDER);
+        restaurant.execute(drinkSecondOrder, Mediator.Action.FINISH_ORDER);
+    }
+
+    public static void Memento() {
+        NotepadManager notepadManager = new NotepadManager();
+        Notepad notepad = new Notepad("file.txt");
+        notepad.write("Hello World! \n");
+        notepadManager.save(notepad);
+        notepad.write("Goodbye! \n");
+        notepadManager.save(notepad);
+        notepad.write("Yeah\n");
+
+        System.out.println(notepad.content);
+        notepadManager.undo(notepad);
+        System.out.println(notepad.content);
+    }
+
+    public static void Observer() {
+        Chief chief = new Chief();
+        Observer.Customer marina = new Observer.Customer("Marina", chief);
+        Observer.Customer andrij = new Observer.Customer("Andrij", chief);
+        Observer.Customer john = new Observer.Customer("John", chief);
+
+        marina.addOrder(new Observer.Order(Observer.OrderType.MARGARITA));
+        andrij.addOrder(new Observer.Order(Observer.OrderType.FOUR_CHEESES));
+        john.addOrder(new Observer.Order(Observer.OrderType.FOUR_CHEESES));
+
+        chief.makingOrder();
+        chief.makingOrder();
+        chief.makingOrder();
     }
 }
