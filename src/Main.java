@@ -37,6 +37,17 @@ import ObjectPool.Connection;
 import Observer.Chief;
 import Proxy.SimpleSite;
 import Proxy.SiteProxy;
+import State.AudioPlayer;
+import Strategy.BicycleAlgorithm;
+import Strategy.CarAlgorithm;
+import Strategy.Navigator;
+import Strategy.WalkAlgorithm;
+import TemplateMethod.FourCheesesMaker;
+import TemplateMethod.MargaritaMaker;
+import Visitor.CafePlace;
+import Visitor.CinemaPlace;
+import Visitor.HolidayMaker;
+import Visitor.ParkPlace;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +55,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        Main.Observer();
+        Main.Visitor();
     }
 
     public static void Singleton() {
@@ -281,5 +292,58 @@ public class Main {
         chief.makingOrder();
         chief.makingOrder();
         chief.makingOrder();
+    }
+
+    public static void State() {
+        AudioPlayer player = new AudioPlayer(Arrays.asList("Eminem", "Один в каное", "Lil Peep", "Святослав Вакарчук"));
+        player.play();
+        player.stop();
+        player.skipBackward();
+        player.skipForward();
+        player.skipForward();
+        player.skipForward();
+        player.skipForward();
+        player.skipForward();
+    }
+
+    public static void Strategy() {
+        Navigator navigator = new Navigator("airport", new WalkAlgorithm());
+        navigator.findRoute("park");
+
+        navigator.algorithm = new BicycleAlgorithm();
+        navigator.findRoute("pizzeria");
+
+        navigator.algorithm = new CarAlgorithm();
+        navigator.findRoute("home");
+    }
+
+    public static void TemplateMethod() {
+        MargaritaMaker pizzaOne = new MargaritaMaker();
+        pizzaOne.addDough();
+        pizzaOne.addSauce();
+        pizzaOne.addTopping();
+        pizzaOne.makePizza();
+        System.out.println("---------------------------------------------");
+        FourCheesesMaker pizzaTwo = new FourCheesesMaker();
+        pizzaTwo.addDough();
+        pizzaTwo.addSauce();
+        pizzaTwo.addTopping();
+        pizzaTwo.makePizza();
+    }
+
+    public static void Visitor() {
+        HolidayMaker visitor = new HolidayMaker();
+        CinemaPlace cinema = new CinemaPlace();
+        ParkPlace park = new ParkPlace();
+        CafePlace cafe = new CafePlace();
+
+        cafe.accept(visitor);
+        System.out.println(visitor.places);
+
+        park.accept(visitor);
+        System.out.println(visitor.places);
+
+        cinema.accept(visitor);
+        System.out.println(visitor.places);
     }
 }
